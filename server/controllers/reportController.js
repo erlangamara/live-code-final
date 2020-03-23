@@ -3,9 +3,21 @@ const {Country} = require('../models')
 
 class Controller{
     static getReport(req, res, next){
-        Report.findAll()
+        Report.findAll({
+            include: [{
+                model: Country
+            }]
+        })
             .then(data=>{
-                res.status(200).json(data)
+                let dataGet = []
+                data.forEach(data => {
+                   dataGet.push({
+                        cases: data.cases,
+                        Country: data.Country
+                    })
+                });
+
+                res.status(200).json(dataGet)
             })
             .catch(err=>{
                 next(err)
@@ -60,7 +72,59 @@ class Controller{
     }
 
     static deleteReport(req, res, next){
+        let casesReport;
+        let idCountry;
         
+        Report.findOne({
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(data=>{
+            casesReport = data.cases
+            
+            return Country.findOne({
+                where: {
+                    id: data.CountryId
+                }
+            })
+        })
+        .then(data=>{
+                let updateCases = {
+                    cases: data.cases - casesReport
+                }
+
+                idCountry = data.id;
+
+                return Country.update(updateCases,{
+                    where: {
+                        id: data.id
+                    }
+                })
+            })
+            .then(data=>{
+                return Report.destroy({
+                    where: {
+                        id: req.params.id
+                    }
+                })
+            })
+            .then(data=>{
+                return Country.findOne({
+                    where: {
+                        id: idCountry
+                    }
+                })
+            })
+            .then(data=>{
+                res.status(200).json({
+                    country: data,
+                    report: "Successfully delete"
+                })
+            })
+            .catch(err=>{
+                next(err)
+            })
     }
 }
 

@@ -10,6 +10,6 @@ router.use(authentication)
 router.get('/countries', ControllerCountry.getCountry)
 router.get('/reports', ControllerReport.getReport)
 router.post('/reports', ControllerReport.createReport)
-router.delete('/delete/:id', authorization, ControllerReport.deleteReport)
+router.delete('/reports/:id', authorization, ControllerReport.deleteReport)
 
 module.exports = router
