@@ -1,11 +1,10 @@
-{
+module.exports = {
   "development": {
-    "username": "postgres",
-    "password": "postgres",
-    "database": "livecode-phase2-siang",
+    "username": process.env.DB_USERNAME,
+    "password": process.env.DB_PASSWORD,
+    "database": "p2_final_lc",
     "host": "127.0.0.1",
-    "dialect": "postgres",
-    "operatorsAliases": false
+    "dialect": "postgres"
   },
   "test": {
     "username": "root",
